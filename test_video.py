@@ -13,7 +13,7 @@ parser.add_argument('--dataset',  type=str, default='MoCA')
 parser.add_argument('--testsplit',  type=str, default='TestDataset_per_sq')
 parser.add_argument('--testsize', type=int, default=352, help='testing size')
 parser.add_argument('--trainsize', type=int, default=352, help='testing size')
-parser.add_argument('--pth_path', type=str, default='/cluster/work/cvl/shuowang/snapshots/VCOD/STL-Net/snapshot/Net_epoch_best.pth')
+parser.add_argument('--pth_path', type=str, default='/cluster/work/cvl/shuowang/snapshots/VCOD/STL-Net/snapshot/Net_epoch_MoCA_short_term_pseudo.pth')
 parser.add_argument('--pretrained_cod10k', default=None,
                         help='path to the pretrained Resnet')
 opt = parser.parse_args()

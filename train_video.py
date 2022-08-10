@@ -155,7 +155,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--epoch', type=int, default=200, help='epoch number')
-    parser.add_argument('--trainsplit', type=str, default='MoCA-Video-Train', help='train from checkpoints')
+    parser.add_argument('--trainsplit', type=str, default='TrainDataset_per_sq', help='train from checkpoints')
     parser.add_argument('--lr', type=float, default=1e-4, help='learning rate')
     parser.add_argument('--batchsize', type=int, default=36, help='training batch size')
     parser.add_argument('--trainsize', type=int, default=352, help='training dataset size')
@@ -166,10 +166,10 @@ if __name__ == '__main__':
                         help='path to the pretrained Swin Transformer')
 
     parser.add_argument('--resume', type=str, default='', help='train from checkpoints')
-    parser.add_argument('--cuda', type=int, default=1, help='use cuda? Default=True')
+    parser.add_argument('--cuda', type=int, default=0, help='use cuda? Default=True')
     parser.add_argument('--seed', type=int, default=2021, help='random seed to use. Default=123')
     parser.add_argument('--dataset',  type=str, default='MoCA')
-    parser.add_argument('--save_path', type=str,default='./snapshot/MoCA/',
+    parser.add_argument('--save_path', type=str,default='/cluster/scratch/shuowang/snapshot/MoCA/',
                         help='the path to save model and log')
     parser.add_argument('--valonly', action='store_true', default=False, help='skip training during training')
     opt = parser.parse_args()

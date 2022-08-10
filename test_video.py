@@ -10,10 +10,10 @@ import pdb
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset',  type=str, default='MoCA')
-parser.add_argument('--testsplit',  type=str, default='MoCA-Video-Test')
+parser.add_argument('--testsplit',  type=str, default='TestDataset_per_sq')
 parser.add_argument('--testsize', type=int, default=352, help='testing size')
 parser.add_argument('--trainsize', type=int, default=352, help='testing size')
-parser.add_argument('--pth_path', type=str, default='./snapshot/COD10K/Net_epoch_best.pth')
+parser.add_argument('--pth_path', type=str, default='/cluster/work/cvl/shuowang/snapshots/VCOD/STL-Net/snapshot/Net_epoch_best.pth')
 parser.add_argument('--pretrained_cod10k', default=None,
                         help='path to the pretrained Resnet')
 opt = parser.parse_args()
@@ -23,7 +23,7 @@ def count_parameters_in_MB(model):
 
 if __name__ == '__main__':
     test_loader = test_dataloader(opt)
-    save_root = './res/{}/'.format(opt.dataset)
+    save_root = '/cluster/scratch/shuowang/results/VCOD/slt-net/res/{}/'.format(opt.dataset)
     # pdb.set_trace()
     model = Network(opt)
 

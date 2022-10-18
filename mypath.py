@@ -4,7 +4,7 @@ class Path(object):
         if dataset == 'COD10K':
             return './dataset/COD10K/'
         elif dataset == 'MoCA':
-            return './dataset/MoCA-Mask/'
+            return '/Users/mac/data/cv/MoCA_Video/'
         elif dataset == 'CAD2016':
             return './dataset/CAD2016/CamouflagedAnimalDataset/'
         else:

@@ -88,7 +88,11 @@ class VideoModel(nn.Module):
                 m[1].eval()
         
     def forward(self, x):
-        image1, image2, image3 = x[0],x[1],x[2]
+        
+        # torch.cat(x, dim=1)
+        image1, image2, image3 = x[:, :3], x[:, 3:6], x[:, 6:]
+        # image1, image2, image3 = x[0],x[1],x[2]
+
         fmap1=self.backbone.feat_net(image1)
         fmap2=self.backbone.feat_net(image2)
         fmap3=self.backbone.feat_net(image3)
@@ -103,3 +107,21 @@ class VideoModel(nn.Module):
         out = self.fusion_conv(concated)
 
         return out12, out13, out
+
+
+if __name__ == '__main__':
+    import os, argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dataset',  type=str, default='MoCA')
+    parser.add_argument('--testsplit',  type=str, default='MoCA-Video-Test')
+    parser.add_argument('--testsize', type=int, default=352, help='testing size')
+    parser.add_argument('--trainsize', type=int, default=352, help='testing size')
+    parser.add_argument('--pth_path', type=str, default='./snapshot/COD10K/Net_epoch_best.pth')
+    parser.add_argument('--pretrained_cod10k', default=None,
+                            help='path to the pretrained Resnet')
+    opt = parser.parse_args()
+
+    model = Network(opt)
+
+    print('debug')

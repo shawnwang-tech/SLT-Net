@@ -3,8 +3,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import lib.pvt_v2
 from timm.models import create_model
-from mmseg.models import build_segmentor
-from mmcv import ConfigDict
+# from mmseg.models import build_segmentor
+# from mmcv import ConfigDict
 import pdb
 
 class BasicConv2d(nn.Module):

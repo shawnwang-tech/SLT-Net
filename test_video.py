@@ -7,13 +7,15 @@ from lib import VideoModel_pvtv2 as Network
 from dataloaders import test_dataloader
 import imageio
 import pdb
+from tqdm import tqdm
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset',  type=str, default='MoCA')
-parser.add_argument('--testsplit',  type=str, default='MoCA-Video-Test')
+parser.add_argument('--testsplit',  type=str, default='TestDataset_per_sq')
 parser.add_argument('--testsize', type=int, default=352, help='testing size')
 parser.add_argument('--trainsize', type=int, default=352, help='testing size')
-parser.add_argument('--pth_path', type=str, default='./snapshot/COD10K/Net_epoch_best.pth')
+parser.add_argument('--pth_path', type=str, default='/Users/mac/Downloads/snapshot/Net_epoch_MoCA_short_term_pseudo.pth')
 parser.add_argument('--pretrained_cod10k', default=None,
                         help='path to the pretrained Resnet')
 opt = parser.parse_args()
@@ -23,7 +25,7 @@ def count_parameters_in_MB(model):
 
 if __name__ == '__main__':
     test_loader = test_dataloader(opt)
-    save_root = './res/{}/'.format(opt.dataset)
+    save_root = '/Users/mac/data/cv/vcod_res/{}/'.format(opt.dataset)
     # pdb.set_trace()
     model = Network(opt)
 
@@ -33,14 +35,21 @@ if __name__ == '__main__':
     # for k, v in pretrained_dict.items():
     #     pdb.set_trace()
 
-    model.load_state_dict(torch.load(opt.pth_path))
-    model.cuda()
+    model.load_state_dict(torch.load(opt.pth_path, map_location=torch.device('cpu')))
+    # model.cuda()
     model.eval()
+
+    onnx_fp = '/Users/mac/Downloads/a.onnx'
+    input_names = ["image"]  
+    output_names = ["pred"]  
+    dynamic_axes = {'image': {0: '-1'}, 'pred': {0: '-1'}} 
+    dummy_input = torch.randn(1, 9, 352, 352)
+    torch.onnx.export(model, dummy_input, onnx_fp, input_names=input_names, dynamic_axes=dynamic_axes, output_names=output_names, opset_version=11, verbose=True) 
 
     # compute parameters
     print('Total Params = %.2fMB' % count_parameters_in_MB(model))
 
-    for i in range(test_loader.size):
+    for i in tqdm(range(test_loader.size)):
         images, gt, names, scene = test_loader.load_data()
         save_path=save_root+scene+'/Pred/'
         if not os.path.exists(save_path):
@@ -48,7 +57,9 @@ if __name__ == '__main__':
 
         gt = np.asarray(gt, np.float32)
         gt /= (gt.max() + 1e-8)
-        images = [x.cuda() for x in images]
+        # images = [x.cuda() for x in images]
+
+        images = torch.cat(images, dim=1)
 
         res1, res2, res = model(images)
 
@@ -62,4 +73,7 @@ if __name__ == '__main__':
         name =names[0].replace('jpg','png')
 
         # if name[-5] in ['0','5']:
+        fp = save_path+name
         imageio.imwrite(save_path+name, res)
+
+        print(fp)

@@ -1,11 +1,21 @@
 clear; close; clc;
-% set the path of sal/gt/results
-salDir = '../res/CAD2016/'; %MoCA_pseudo
-Models = {'Ours_long_term'};  
-%'
-gtDir = '../dataset/CamouflagedAnimalDataset/'; 
-Datasets = {'new_gt'}; %sequences
-Results_Save_Path = './Result/CAD/';
+% % set the path of sal/gt/results
+% salDir = '../res/CAD2016/'; %MoCA_pseudo
+% Models = {'Ours_long_term'};  
+% %'
+% gtDir = '../dataset/CamouflagedAnimalDataset/'; 
+% Datasets = {'new_gt'}; %sequences
+% Results_Save_Path = './Result/CAD/';
+
+
+
+% % set the path of sal/gt/results
+salDir = '/Users/wangshuo/data/results/cv/dgnet/20220809123240/Exp02/'; %MoCA_pseudo
+Models = {'DGNet'};  
+% %'
+gtDir = '/Users/wangshuo/data/CV/COD/TestDataset/'; 
+Datasets = {'CAMO'}; %sequences
+Results_Save_Path = '/Users/wangshuo/data/CV/DGNet/eval-result/';
 
 
 Thresholds = 1:-1/255:0;

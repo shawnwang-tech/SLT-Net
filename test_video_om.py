@@ -7,7 +7,10 @@ from lib import VideoModel_pvtv2 as Network
 from dataloaders import test_dataloader
 import imageio
 import pdb
+import sys
 from tqdm import tqdm
+from mindx.sdk.base import Tensor, Model
+# os.system('. ~/mindx_dir/mxVision/set_env.sh')
 
 
 parser = argparse.ArgumentParser()
@@ -25,9 +28,13 @@ def count_parameters_in_MB(model):
 
 if __name__ == '__main__':
     test_loader = test_dataloader(opt)
-    save_root = '/Users/mac/data/cv/vcod_res/{}/'.format(opt.dataset)
+    save_root = '/home/fandengping01/shuowang_project/sltnet_om_res/{}/'.format(opt.dataset)
     # pdb.set_trace()
-    model = Network(opt)
+    # model = Network(opt)
+
+    device_id = 0
+
+    model = Model('/home/fandengping01/shuowang_project/test/sltnet_sim_om.om', device_id)
 
     # pretrained_dict = torch.load(opt.pth_path)
     # model_dict = model.state_dict()
@@ -35,19 +42,32 @@ if __name__ == '__main__':
     # for k, v in pretrained_dict.items():
     #     pdb.set_trace()
 
-    model.load_state_dict(torch.load(opt.pth_path, map_location=torch.device('cpu')))
+    # model.load_state_dict(torch.load(opt.pth_path, map_location=torch.device('cpu')))
     # model.cuda()
-    model.eval()
+    # model.eval()
 
-    onnx_fp = '/Users/mac/Downloads/sltnet.onnx'
-    input_names = ["image"]  
-    output_names = ["pred"]  
-    dynamic_axes = {'image': {0: '-1'}, 'pred': {0: '-1'}} 
-    dummy_input = torch.randn(1, 9, 352, 352)
-    torch.onnx.export(model, dummy_input, onnx_fp, input_names=input_names, dynamic_axes=dynamic_axes, output_names=output_names, opset_version=11, verbose=True) 
+    # onnx_fp = '/Users/mac/Downloads/sltnet.onnx'
+    # input_names = ["image"]  
+    # output_names = ["pred"]  
+    # dynamic_axes = {'image': {0: '-1'}, 'pred': {0: '-1'}} 
+    # dummy_input = torch.randn(1, 9, 352, 352).numpy()
+    # torch.onnx.export(model, dummy_input, onnx_fp, input_names=input_names, dynamic_axes=dynamic_axes, output_names=output_names, opset_version=11, verbose=True) 
+
+    # imageTensor = Tensor(dummy_input)
+    # imageTensor.to_device(device_id)
+    # out = model.infer(imageTensor)
+    # out = out[0]
+    # out.to_host()
 
     # compute parameters
-    print('Total Params = %.2fMB' % count_parameters_in_MB(model))
+    # print('Total Params = %.2fMB' % count_parameters_in_MB(model))
+
+    # print('debug')
+
+    # out = torch.from_numpy(np.array(out))
+    # print(out.shape)
+
+    # sys.exit()
 
     for i in tqdm(range(test_loader.size)):
         images, gt, names, scene = test_loader.load_data()
@@ -61,7 +81,17 @@ if __name__ == '__main__':
 
         images = torch.cat(images, dim=1)
 
-        res1, res2, res = model(images)
+
+        images = images.numpy()
+        imageTensor = Tensor(images)
+        imageTensor.to_device(device_id)
+        out = model.infer(imageTensor)
+        res = out[-1]
+        res.to_host()
+
+        # res1, res2, res = model(images)
+
+        res = torch.from_numpy(np.array(res))
 
         res = F.upsample(res, size=gt.shape, mode='bilinear', align_corners=False)
         # res = F.upsample(res1[-1], size=gt.shape, mode='bilinear', align_corners=False)

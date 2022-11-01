@@ -1,4 +1,4 @@
-import cv2
+inference_om.py import cv2
 import os
 from matplotlib import image
 # os.system('. ~/mindx_dir/mxVision/set_env.sh')
@@ -7,6 +7,7 @@ import numpy as np
 from mindx.sdk.base import Tensor, Model
 import torch.nn.functional as F
 import torch
+import sys
 
 
 def infer(filepath, ROOT_PATH, SAVE_PATH, device_id):
@@ -14,6 +15,9 @@ def infer(filepath, ROOT_PATH, SAVE_PATH, device_id):
     model = Model(filepath, device_id)
     print(model)
     os.makedirs(SAVE_PATH, exist_ok=True)
+
+
+    sys.exit()
     for img_name in os.listdir(ROOT_PATH):
         img_src = cv2.imread(os.path.join(ROOT_PATH, img_name))
         resizeImage = cv2.resize(img_src, (352,352), interpolation= cv2.INTER_LINEAR)

@@ -39,7 +39,7 @@ if __name__ == '__main__':
     # model.cuda()
     model.eval()
 
-    onnx_fp = '/Users/mac/Downloads/a.onnx'
+    onnx_fp = '/Users/mac/Downloads/sltnet.onnx'
     input_names = ["image"]  
     output_names = ["pred"]  
     dynamic_axes = {'image': {0: '-1'}, 'pred': {0: '-1'}} 
